@@ -8,8 +8,8 @@ Desenvolvimento de uma aplicação web integrada a um sistema embarcado
 |
 |__codigo-esp32/ # CÓDIGO DO ESP PARA COLETA E TRANSMISSÃO DE DADOS
 |
-|__mosquitto/ # CONFIGURAÇÕES DO BROKER MQTT
-|
 |__frontend/ # INTERFACE WEB E REQUISIÇÕES A API
+|
+|__mosquitto/ # CONFIGURAÇÕES DO BROKER MQTT
 |
 |__README.MD # ORIENTAÇÕES
