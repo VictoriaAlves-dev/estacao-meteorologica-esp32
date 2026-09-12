@@ -10,6 +10,6 @@ Desenvolvimento de uma aplicação web integrada a um sistema embarcado
 |
 |__mosquitto/ # CONFIGURAÇÕES DO BROKER MQTT
 |
-|__frontend/ # INTERFACE WEB E REQUISIÇÕES Á API
+|__frontend/ # INTERFACE WEB E REQUISIÇÕES A API
 |
 |__README.MD # ORIENTAÇÕES
