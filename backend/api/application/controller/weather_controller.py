@@ -2,10 +2,25 @@ from datetime import datetime
 import pyodbc
 import json
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from application.configs.pyodbc_configs import GetConnectionString
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/clima/climaAtual")
 def read_clima_atual():

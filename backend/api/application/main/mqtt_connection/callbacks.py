@@ -38,7 +38,7 @@ def SaveToDatabase(topic, measurementValue):
         dados = json.loads(measurementValue)
         
         temperatura = float(dados.get("temperatura", 0))
-        indiceUV = float(dados.get("indiceUV", 0))
+        indiceUV = float(dados.get("indice_uv", 0))
         umidade = float(dados.get("umidade", 0))
         
         query = "INSERT INTO TBclima (Temperatura, indiceUV, umidade) VALUES (?,?,?)"
