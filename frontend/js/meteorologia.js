@@ -177,4 +177,57 @@ async function atualizarMedicoes() {
 }
 atualizarMedicoes();
 
+async function atualizarHistoricoSemanal() {
+    const container = document.getElementById("historico-linhas");
+    if (!container) return;
+
+    try {
+        const resposta = await fetch("http://localhost:8000/clima/climaSemanal");
+        
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar o histórico semanal.");
+        }
+
+        const respostaJson = await resposta.json();
+        const historico = respostaJson.dados;
+
+        if (!historico || historico.length === 0) {
+            throw new Error("Nenhum dado no histórico.");
+        }
+
+        container.innerHTML = ""; // Limpa os dados estáticos antigos
+
+        historico.forEach(dia => {
+            const linha = document.createElement("div");
+            linha.className = "table-row";
+            linha.innerHTML = `
+                <div>${dia.dia_semana} (${dia.data})</div>
+                <div>${dia.media !== undefined ? dia.media.toFixed(1) + "°C" : "--"}</div>
+                <div>${dia.temp_minima !== undefined ? dia.temp_minima + "°C" : "--"}</div>
+                <div>${dia.temp_maxima !== undefined ? dia.temp_maxima + "°C" : "--"}</div>
+            `;
+            container.appendChild(linha);
+        });
+
+    } catch (erro) {
+        console.warn("Histórico semanal vazio ou indisponível:", erro);
+        
+        // Mostra "--" se a base estiver vazia ou houver erro
+        container.innerHTML = `
+            <div class="table-row">
+                <div>--</div>
+                <div>--</div>
+                <div>--</div>
+                <div>--</div>
+            </div>
+        `;
+    }
+}
+
+// Executa ao carregar a página
+atualizarHistoricoSemanal();
+
+// Executa ao carregar a página
+atualizarHistoricoSemanal();
+
 setInterval(atualizarMedicoes, 5000);
