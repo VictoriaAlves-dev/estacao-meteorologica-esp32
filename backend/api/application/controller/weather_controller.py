@@ -12,6 +12,8 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://127.0.0.1:5500",  # <--- Adiciona esta linha
+    "http://localhost:5500",  # <--- E esta se necessário
 ]
 
 app.add_middleware(
@@ -21,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/clima/climaAtual")
 def read_clima_atual():

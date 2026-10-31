@@ -134,39 +134,47 @@ atualizarStatusMQTT(
 );
 
 
-/* 
-   4. MEDIÇÕES SIMULADAS ATENÇÃO: NÃO SÃO DADOS REAIS DOS SENSORES */
+/* 4. MEDIÇÕES REAIS (Integradas com a API Python) */
 
-function atualizarMedicoes() {
-    const temperatura = (25 + Math.random() * 5).toFixed(1);
-    const umidade = Math.round(50 + Math.random() * 35);
-    const indiceUV = Math.round(Math.random() * 11);
+async function atualizarMedicoes() {
+    try {
+        const resposta = await fetch("http://localhost:8000/clima/climaAtual");
+        
+        if (!resposta.ok) {
+            throw new Error("Não foi possível buscar os dados da API.");
+        }
 
-    document.getElementById("temperatura-principal").textContent =
-        `${temperatura}°C`;
+        const respostaJson = await resposta.json();
+        const dados = respostaJson.climaAtual && respostaJson.climaAtual.length > 0 
+            ? respostaJson.climaAtual[0] 
+            : null;
 
-    document.getElementById("temperatura").textContent =
-        `${temperatura}°C`;
+        if (!dados) {
+            throw new Error("Nenhum dado de clima encontrado na base de dados.");
+        }
 
-    document.getElementById("umidade").textContent =
-        `${umidade}%`;
+        document.getElementById("temperatura-principal").textContent = `${dados.temperatura}°C`;
+        document.getElementById("temperatura").textContent = `${dados.temperatura}°C`;
+        document.getElementById("umidade").textContent = `${dados.umidade}%`;
+        document.getElementById("indice-uv").textContent = dados.indiceUV;
 
-    document.getElementById("indice-uv").textContent =
-        indiceUV;
+        const agora = new Date();
+        document.getElementById("ultima-atualizacao").textContent = 
+            `Última atualização: ${agora.toLocaleTimeString("pt-BR")}`;
 
-    const agora = new Date();
+        atualizarStatusMQTT("connected", "Conectado ao Sistema");
 
-    document.getElementById("ultima-atualizacao").textContent =
-        `Última atualização: ${agora.toLocaleTimeString("pt-BR")}`;
+    } catch (erro) {
+        console.error("Erro ao atualizar medições:", erro);
+        atualizarStatusMQTT("disconnected", "Aguardando dados...");
+        
+        // Zera ou limpa os números no front-end quando a base está vazia
+        document.getElementById("temperatura-principal").textContent = "--°C";
+        document.getElementById("temperatura").textContent = "--°C";
+        document.getElementById("umidade").textContent = "--%";
+        document.getElementById("indice-uv").textContent = "--";
+    }
 }
-
-
-/* 5. BOTÃO DE ATUALIZAÇÃO MANUAL*/
-
-const botaoAtualizar = document.getElementById("botao-atualizar");
-
-if (botaoAtualizar) {
-    botaoAtualizar.addEventListener("click", atualizarMedicoes);
-}
-
 atualizarMedicoes();
+
+setInterval(atualizarMedicoes, 5000);
